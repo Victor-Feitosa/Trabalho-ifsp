@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'maria159753',
+  password: '',
   database: 'reserveme',
 });
 
@@ -26,20 +26,22 @@ connection.connect((err) => {
 });
 
 //caminho da Rota
-app.post('/cadastrarDados', (req, res) => {
+app.post('/cadastro', (req, res) => {
   const dados = req.body; 
 
   connection.query(
-    'INSERT INTO teste (nome, sobrenome, genero, celular, senha, nascimento, tipoDocumento, numeroDocumento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-    [dados.nome, dados.sobrenome, dados.genero, dados.celular, dados.senha, dados.nascimento, dados.tipoDocumento, dados.numeroDocumento],
+    'INSERT INTO contratante2 (email, nome, genero, celular, senha, dataNascimento, tipoDocumento, documento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    [dados.email, dados.nome, dados.genero, dados.celular, dados.senha, dados.nascimento, dados.tipoDocumento, dados.numeroDocumento],
     (error, results) => {
       if (error) {
         console.error('Erro ao inserir dados:', error);
         res.status(500).json({ error: 'Erro ao cadastrar dados' });
+        alert('Não deu certo');
         return;
       }
 
       res.status(200).json({ success: true, message: 'Cadastro realizado com sucesso' });
+      console.log('Deu certo!! ', dados);
     }
   );
 });
@@ -59,6 +61,7 @@ app.post('/profissionais', (req, res) => {
           return;
         }
   
+        
         res.status(200).json({ success: true, message: 'Cadastro realizado com sucesso' });
       }
     );
@@ -67,7 +70,7 @@ app.post('/profissionais', (req, res) => {
   
 // Rota para obter dados de todos os profissionais
 app.get('/profissionais', (req, res) => {
-  const query = 'SELECT * FROM sua_tabela';
+  const query = 'SELECT * FROM profissionais';
   db.query(query, (error, results) => {
     if (error) {
       console.error('Erro ao executar a consulta:', error);
@@ -77,6 +80,57 @@ app.get('/profissionais', (req, res) => {
 
     res.status(200).json(results);
   });
+});
+
+// Rota para autenticação de usuário
+app.post('/login', (req, res) => {
+  const { email, senha } = req.body;
+
+  connection.query(
+    'SELECT * FROM contratante2 WHERE email = ? AND senha = ?',
+    [email, senha],
+    (error, results) => {
+      if (error) {
+        console.error('Erro ao executar a consulta:', error);
+        res.status(500).json({ error: 'Erro ao processar a requisição.' });
+        return;
+      }
+
+      if (results.length > 0) {
+        // Usuário autenticado com sucesso
+        res.status(200).json({ logado: true });
+      } else {
+        // Usuário não autenticado
+        res.status(200).json({ logado: false });
+      }
+    }
+  );
+});
+
+
+// Rota para autenticação de usuário
+app.post('/login-prestar', (req, res) => {
+  const { usuario, senha } = req.body;
+
+  connection.query(
+    'SELECT * FROM profissionais WHERE usuario = ? AND senha = ?',
+    [usuario, senha],
+    (error, results) => {
+      if (error) {
+        console.error('Erro ao executar a consulta:', error);
+        res.status(500).json({ error: 'Erro ao processar a requisição.' });
+        return;
+      }
+
+      if (results.length > 0) {
+        // Usuário autenticado com sucesso
+        res.status(200).json({ logado: true });
+      } else {
+        // Usuário não autenticado
+        res.status(200).json({ logado: false });
+      }
+    }
+  );
 });
 
 app.listen(PORT, () => {
