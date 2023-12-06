@@ -82,57 +82,6 @@ app.get('/profissionais', (req, res) => {
   });
 });
 
-// Rota para autenticação de usuário
-app.post('/login', (req, res) => {
-  const { email, senha } = req.body;
-
-  connection.query(
-    'SELECT * FROM contratante2 WHERE email = ? AND senha = ?',
-    [email, senha],
-    (error, results) => {
-      if (error) {
-        console.error('Erro ao executar a consulta:', error);
-        res.status(500).json({ error: 'Erro ao processar a requisição.' });
-        return;
-      }
-
-      if (results.length > 0) {
-        // Usuário autenticado com sucesso
-        res.status(200).json({ logado: true });
-      } else {
-        // Usuário não autenticado
-        res.status(200).json({ logado: false });
-      }
-    }
-  );
-});
-
-
-// Rota para autenticação de usuário
-app.post('/login-prestar', (req, res) => {
-  const { usuario, senha } = req.body;
-
-  connection.query(
-    'SELECT * FROM profissionais WHERE usuario = ? AND senha = ?',
-    [usuario, senha],
-    (error, results) => {
-      if (error) {
-        console.error('Erro ao executar a consulta:', error);
-        res.status(500).json({ error: 'Erro ao processar a requisição.' });
-        return;
-      }
-
-      if (results.length > 0) {
-        // Usuário autenticado com sucesso
-        res.status(200).json({ logado: true });
-      } else {
-        // Usuário não autenticado
-        res.status(200).json({ logado: false });
-      }
-    }
-  );
-});
-
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });

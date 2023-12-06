@@ -45,11 +45,11 @@
 
  <!--Formulario de login-->
  
-    <div class="login">
-        <h2>Fazer login</h2>
-        <form id="loginForm" onsubmit="return validarFormulario()">
-            <label for="email">Email</label><br>
-            <input type="text" id="email" name="email"><br><br>
+        <div class="login">
+            <h2>Fazer login</h2>
+            <form id="loginForm" onsubmit="return validarFormulario()">
+                <label for="usuario">Usuário</label><br>
+                <input type="text" id="usuario" name="usuario"><br><br>
                 
             <label for="senha">Senha</label><br>
             <input type="password" id="senha" name="senha"><br>
@@ -59,39 +59,6 @@
         </form>
     </div>
 
-    <script>
-        function validarFormulario() {
-            // Recuperar os valores do usuário e senha inseridos no formulário
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-
-            // Fazer a solicitação ao servidor para autenticação
-            fetch('http://localhost:3000/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, senha }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.logado) {
-                    // Redirecionar o usuário para a página inicial do site
-                    window.location.href = 'index.html';
-                } else {
-                    // Exibir uma mensagem de erro e não redirecionar o usuário
-                    alert('Usuário ou senha incorretos. Por favor, tente novamente.');
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                alert('Erro ao processar a solicitação. Por favor, tente novamente.');
-            });
-
-            // Evitar o redirecionamento padrão do formulário
-            return false;
-        }
-    </script>
-
+ 
 </body>
 </html>
