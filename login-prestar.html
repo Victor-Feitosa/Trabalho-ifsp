@@ -64,7 +64,37 @@
 </body>
 
 <script>
-    
+    function validarFormulario() {
+            // Recuperar os valores do usuário e senha inseridos no formulário
+            const usuario = document.getElementById('usuario').value;
+            const senha = document.getElementById('senha').value;
+
+            // Fazer a solicitação ao servidor para autenticação
+            fetch('http://localhost:3000/login-prestar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ usuario, senha }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.logado) {
+                    // Redirecionar o usuário para a página inicial do site
+                    window.location.href = 'index.html';
+                } else {
+                    // Exibir uma mensagem de erro e não redirecionar o usuário
+                    alert('Usuário ou senha incorretos. Por favor, tente novamente.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao processar a solicitação. Por favor, tente novamente.');
+            });
+
+            // Evitar o redirecionamento padrão do formulário
+            return false;
+        }
 </script>
 
 </html>
