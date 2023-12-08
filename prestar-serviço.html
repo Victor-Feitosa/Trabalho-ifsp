@@ -49,8 +49,8 @@
             <!-- Primeira Coluna -->
             <div class="column prestar">
                 <div class="form-group prestar">
-                    <label for="usuario">Usuário</label>
-                    <input type="text" id="usuario" name="usuario" required>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
                 </div>
                 <div class="form-group prestar">
                     <label for="senha">Senha</label>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="form-group prestar">
                     <label for="observacoes">Observações</label>
-                    <textarea id="observacoes" name="observacoes"></textarea>
+                    <textarea id="observacoes" name="observacoes" maxlength="1.8vw 1vw 1.8vw 2vw"></textarea>
                 </div>
             </div>
             <!-- Segunda Coluna -->
@@ -528,7 +528,7 @@ form.addEventListener('submit', async function (event) {
     event.preventDefault();
 
     // Obtém os valores dos campos do formulário
-    const usuario = document.getElementById('usuario').value;
+    const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
     const servico = document.getElementById('servico').value;
     const observacoes = document.getElementById('observacoes').value;
@@ -615,7 +615,7 @@ form.addEventListener('submit', async function (event) {
     const domingoHoraFim = domingoFim.options[domingoFim.selectedIndex].innerText;
         
     const data = {
-        usuario,
+        email,
         senha,
         servico,
         observacoes,
@@ -653,7 +653,6 @@ form.addEventListener('submit', async function (event) {
 
     .then(response => response.json())
     .then(data => {
-        console.log('Cadastro realizado com sucesso!', data);
         alert('Cadastro realizado com sucesso!');
         window.location.href ='./login-prestar.html';
     })

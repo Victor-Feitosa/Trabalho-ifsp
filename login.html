@@ -64,7 +64,7 @@
             // Recuperar os valores do usuário e senha inseridos no formulário
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
-
+    
             // Fazer a solicitação ao servidor para autenticação
             fetch('http://localhost:3000/login', {
                 method: 'POST',
@@ -76,8 +76,10 @@
             .then(response => response.json())
             .then(data => {
                 if (data.logado) {
-                    // Redirecionar o usuário para a página inicial do site
-                    window.location.href = 'index.html';
+                    const redirectURL = `pagina_logado.html?id=${data.idContratante}&nome=${data.nome}`;
+                    console.log(data);
+                    console.log("Redirect URL:", redirectURL);
+                    window.location.href = redirectURL;
                 } else {
                     // Exibir uma mensagem de erro e não redirecionar o usuário
                     alert('Usuário ou senha incorretos. Por favor, tente novamente.');
@@ -87,11 +89,12 @@
                 console.error('Erro:', error);
                 alert('Erro ao processar a solicitação. Por favor, tente novamente.');
             });
-
+    
             // Evitar o redirecionamento padrão do formulário
             return false;
         }
     </script>
+    
 
 </body>
 </html>

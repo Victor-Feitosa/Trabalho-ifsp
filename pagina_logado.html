@@ -24,7 +24,8 @@
                     <img src="img/hamburguer.png" alt="menu">
                     <div class="nav-lateral">
                         <div style="color: white; font-size: 1.5vw; padding-top: 6vw;" class="top"> 
-                            <p>Olá XXX XXX XXX, Seja bem-vindo</p>
+                            <!-- TODO: Criar uma seção para quanto o usuario estiver logado aparecer o nome dele aqui -->
+                            <p>Olá <span id="userNome"> </span>, Seja bem-vindo</p>
                             <p>ao RESERVE-ME.</p>
                         </div>
                         <div class="bottom"> 
@@ -33,6 +34,7 @@
                                 <a href="#">Serviço solicitado</a>
                             </div>
                             <div class="button-2">
+                                <!-- TODO: Criar a função do botão sair -->
                                 <a href="index.html">Sair</a>
                             </div>
                         </div> 
@@ -72,6 +74,7 @@
     </header>
     <div id="popup" class="popup-servico">
         <div class="popup-content-servico">
+            <!-- TODO: Colocar spans e classes para trocar dinamicamente esses itens -->
           <p>Agendamento com o barbeiro XXXXXXXXXXX,</p>
           <p>Dia XX xx XXXXXXXXXXX, as XXh, com o serviço</p>
           <p>de XXXXX XXXXXXXXXXX</p>
@@ -114,6 +117,14 @@
     </footer>
 
     <script>
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const user = urlParams.get('nome');
+
+        // Exibir o e-mail onde desejado
+        document.getElementById('userNome').innerText = `${user}`;
+
+
         const openPopupButton = document.getElementById("openPopup");
             const popup = document.getElementById("popup");
             const closeButton = document.getElementById("fecharPopup");

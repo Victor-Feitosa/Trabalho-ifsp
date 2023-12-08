@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
+const cookie = require('cookie');
 
 const app = express();
 const PORT = 3000;
@@ -25,12 +26,24 @@ connection.connect((err) => {
   console.log('Conectado ao banco de dados MariaDB');
 });
 
+app.post('/', (req, res) => {
+  res.render('index.html');
+});
+
+
+app.post('/pagina_logado', (req, res) => {
+  res.render('pagina_logado.html');
+});
+
+
+
+
 //caminho da Rota
 app.post('/cadastro', (req, res) => {
   const dados = req.body; 
 
   connection.query(
-    'INSERT INTO contratante2 (email, nome, genero, celular, senha, dataNascimento, tipoDocumento, documento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    'INSERT INTO contratante (email, nome, genero, celular, senha, dataNascimento, tipoDocumento, documento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
     [dados.email, dados.nome, dados.genero, dados.celular, dados.senha, dados.nascimento, dados.tipoDocumento, dados.numeroDocumento],
     (error, results) => {
       if (error) {
@@ -41,6 +54,7 @@ app.post('/cadastro', (req, res) => {
       }
 
       res.status(200).json({ success: true, message: 'Cadastro realizado com sucesso' });
+      res.redirect('login');
       console.log('Deu certo!! ', dados);
     }
   );
@@ -60,9 +74,9 @@ app.post('/profissionais', (req, res) => {
           res.status(500).json({ error: 'Erro ao cadastrar dados' });
           return;
         }
-  
         
         res.status(200).json({ success: true, message: 'Cadastro realizado com sucesso' });
+        console.log('Deu certo!! ', data);
       }
     );
   });
@@ -83,11 +97,12 @@ app.get('/profissionais', (req, res) => {
 });
 
 // Rota para autenticação de usuário
+// Rota para autenticação de usuário
 app.post('/login', (req, res) => {
   const { email, senha } = req.body;
 
   connection.query(
-    'SELECT * FROM contratante2 WHERE email = ? AND senha = ?',
+    'SELECT * FROM contratante WHERE email = ? AND senha = ?',
     [email, senha],
     (error, results) => {
       if (error) {
@@ -97,8 +112,28 @@ app.post('/login', (req, res) => {
       }
 
       if (results.length > 0) {
-        // Usuário autenticado com sucesso
-        res.status(200).json({ logado: true });
+        const user = results[0]; // Assume que há apenas um usuário com esse e-mail
+
+        // Gere um cookie e configure a resposta
+
+        const idCookie = cookie.serialize('id', user.id, {
+          httpOnly: true,
+          maxAge: 3600000, // Tempo de vida do cookie em milissegundos (1 hora)
+          sameSite: 'strict', // Pode ajustar conforme necessário
+          path: '/', // Pode ajustar conforme necessário
+        });
+
+        const nameCookie = cookie.serialize('name', user.nome, {
+          httpOnly: true,
+          maxAge: 3600000, // Tempo de vida do cookie em milissegundos (1 hora)
+          sameSite: 'strict', // Pode ajustar conforme necessário
+          path: '/', // Pode ajustar conforme necessário
+        });
+
+        res.setHeader('Set-Cookie', [idCookie, nameCookie]);
+        
+        // Inclua o ID na resposta
+        res.status(200).json({ logado: true, idContratante: user.idContratante, nome: user.nome });
       } else {
         // Usuário não autenticado
         res.status(200).json({ logado: false });
@@ -108,13 +143,15 @@ app.post('/login', (req, res) => {
 });
 
 
+
+
 // Rota para autenticação de usuário
 app.post('/login-prestar', (req, res) => {
-  const { usuario, senha } = req.body;
+  const { email, senha } = req.body;
 
   connection.query(
-    'SELECT * FROM profissionais WHERE usuario = ? AND senha = ?',
-    [usuario, senha],
+    'SELECT * FROM profissionais WHERE email = ? AND senha = ?',
+    [email, senha],
     (error, results) => {
       if (error) {
         console.error('Erro ao executar a consulta:', error);

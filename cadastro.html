@@ -47,22 +47,26 @@
         <div class="form-container prestar">
             <!-- Primeira Coluna -->
             <div class="column prestar">
+
                 <div class="form-group prestar">
                     <label for="email">email</label>
-                    <input type="text" id="email" name="email" required>
+                    <input type="email" id="email" name="email" required>
                 </div>
+
                 <div class="form-group prestar">
                     <label for="nome">nome</label>
                     <input type="text" id="nome" name="nome" required>
                 </div>
+
                 <div class="form-group prestar">
                     <label>Gênero</label><br>
                     <input type="radio" id="masculino" name="genero" value="Masculino">Masculino <br>
                     <input type="radio" id="feminino" name="genero" value="Feminino">Feminino
                 </div>
+
                 <div class="form-group prestar">
                     <label for="celular">celular</label>
-                    <input type="text" id="celular" name="celular" required>
+                    <input type="number" id="celular" name="celular" required>
                 </div>
 
                 <div class="form-group prestar">
@@ -106,69 +110,6 @@
 
 
 
-    
-   <!-- <div class="container">
-    <div class="coluna prestar">
-        <form id="formDadosPessoais">
-
-            <div class="form-group prestar">
-                <label for="nome">Nome</label>
-                <input type="text" id="nome" name="nome" required>
-            </div>
-
-            <div class="form-group prestar">
-                <label for="usuario">usuario</label><br>
-                <input type="text" id="usuario" name="usuario" required>
-            </div>
-            
-            <div class="form-group prestar">
-                <label>Gênero</label><br>
-                <input type="radio" id="masculino" name="genero" value="Masculino">Masculino <br>
-                <input type="radio" id="feminino" name="genero" value="Feminino">Feminino
-            </div>
-            
-            <div class="form-group prestar">
-                <label for="celular">Celular</label><br>
-                <input type="text" id="celular" name="celular" required><br><br>
-            </div>
-            
-            <div class="form-group prestar">
-                <label for="senha">Senha</label><br>
-                <input type="password" id="senha" name="senha" required><br><br>
-            </div>
-
-            <div class="form-group prestar">
-                <label for="confirmaSenha">Confirma Senha</label><br>
-                <input type="password" id="confirmaSenha" name="confirmaSenha" required><br><br>
-            </div>
-
-            
-        </form>
-    </div>
-    <div class="coluna">
-        <form id="formDadosAcesso">     
-            
-            <label for="nascimento">Data de Nascimento</label><br>
-            <input type="date" id="nascimento" name="nascimento" required><br><br>
-            
-            <label>Tipo</label>
-            <select id="tipoDocumento" name="tipoDocumento">
-                <option value="CPF">CPF</option>
-                <option value="RG">RG</option>
-                <option value="CNH">CNH</option>
-                
-            </select><br><br>
-            <label for="numeroDocumento">Documento</label>
-                <input type="text" id="numeroDocumento" name="numeroDocumento" required>
-            <br><br>
-
-            <button type="submit">Prestar Serviço</button>
-        </form>
-    </div>
-</div> -->
-
-
-
 <script>
    // Seleciona o formulário com a classe "prestar"
 const form = document.querySelector('.prestar');
@@ -189,7 +130,73 @@ form.addEventListener('submit', async function (event) {
     var tipoDocumento = document.getElementById('tipoDocumento').options[document.getElementById('tipoDocumento').selectedIndex].value;
     var numeroDocumento = document.getElementById("numeroDocumento").value;
           
+// Validação simples dos campos (você pode aprimorar isso conforme necessário)
+if (email === "" || nome === "" || celular === "" || senha === "" ||    confirmaSenha === "" || nascimento === "" || tipoDocumento === "" || numeroDocumento === "") {
+        alert("Por favor, preencha todos os campos.");
+        return;
+    }
 
+
+    if (senha !== confirmaSenha) {
+        alert("As senhas não coincidem. Por favor, verifique.");
+        return;
+    }
+
+    if (celular.length !== 11) {
+        alert("O celular esta incorreto. Por favor, verifique.");
+        return;
+    }
+
+
+    // Verificar se a data de nascimento é válida (por exemplo, no formato AAAA-MM-DD)
+    if (!validarDataDeNascimento(nascimento)) {
+        alert("A data de nascimento não é válida. Use o formato AAAA-MM-DD.");
+    }
+
+
+    // Função para validar a data de nascimento
+    function validarDataDeNascimento(dataNascimento) {
+        var regexData = /^\d{4}-\d{2}-\d{2}$/; // Formato AAAA-MM-DD
+        if (!regexData.test(dataNascimento)) {
+            return false;
+        }
+        var dataParts = dataNascimento.split("-");
+        var ano = parseInt(dataParts[0]);
+        var mes = parseInt(dataParts[1]);
+        var dia = parseInt(dataParts[2]);
+        if (mes < 1 || mes > 12 || dia < 1 || dia > 31) {
+            return false;
+        }
+        // Você pode adicionar validações adicionais, como verificar se a data é anterior à data atual.
+        return true;
+    }
+
+
+    // Verificar se o número do documento está no formato correto
+    if (!validarNumeroDocumento(numeroDocumento, tipoDocumento)) {
+        alert("O número do documento não é válido para o tipo selecionado.");
+        return;
+    }
+
+    // Função para validar o número do documento com base no tipo (CPF, RG, CNH, etc.)
+    function validarNumeroDocumento(numero, tipo) {
+        switch (tipo) {
+            case "CPF":
+                // Validar formato de CPF (neste exemplo, apenas validação de formato)
+                var regexCPF = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/; // Formato 123.456.789-00
+                return regexCPF.test(numero);
+            case "RG":
+                // Validar formato de RG (neste exemplo, apenas validação de formato)
+                var regexRG = /^(\d{2}\.\d{3}\.\d{3}-\d{1}|\d{9})$/; // Formato 12.345.678-9 ou 123456789
+                return regexRG.test(numero);
+            case "CNH":
+                // Validar formato de CNH (neste exemplo, apenas validação de formato)
+                var regexCNH = /^\d{11}$/; // Formato 12345678901
+                return regexCNH.test(numero);
+            default:
+                return false; // Tipo de documento desconhecido
+        }
+    }
         
     const data = {
         email,
@@ -202,6 +209,7 @@ form.addEventListener('submit', async function (event) {
 		tipoDocumento,
 		numeroDocumento
     };
+
     // Configuração do objeto fetch
     fetch('http://localhost:3000/cadastro', {
         method: 'POST',

@@ -7,6 +7,40 @@
         <!-- Google Font Link for Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
     <title>Reserve.me</title>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          // Função para recuperar um cookie específico pelo nome
+          function getCookie(name) {
+              const cookies = document.cookie.split(';');
+              for (const cookie of cookies) {
+                  const [cookieName, cookieValue] = cookie.trim().split('=');
+                  if (cookieName === name) {
+                      return cookieValue;
+                  }
+              }
+              return null;
+          }
+
+          // Recuperar os valores dos cookies desejados
+          const userId = getCookie('id');
+          const userName = getCookie('name');
+          const userEmail = getCookie('email');
+
+          // Exemplo de uso dos valores dos cookies
+          if (userId && userName && userEmail) {
+              console.log('User ID:', userId);
+              console.log('User Name:', userName);
+              console.log('User Email:', userEmail);
+
+              // Atualize seu HTML com os valores recuperados, por exemplo:
+              const userNomeElement = document.getElementById('userNome');
+              userNomeElement.textContent = userName;
+          } else {
+              console.log('Cookies não encontrados');
+          }
+      });
+  </script>
 </head>
 
 <body class="profissional">
@@ -24,7 +58,7 @@
                 <img src="img/hamburguer.png" alt="menu">
                 <div class="nav-lateral">
                     <div style="color: white; font-size: 1.5vw; padding-top: 6vw;" class="top"> 
-                        <p>Olá XXX XXX XXX, Seja bem-vindo</p>
+                        <p>Olá <span id="userNome"> </span>, Seja bem-vindo</p>
                         <p>ao RESERVE-ME.</p>
                     </div>
                     <div class="bottom"> 
@@ -180,6 +214,7 @@
     </script>
 
 <script>
+  // Função para recuperar um cookie específico pelo nome
 
 // Selecione a div onde você deseja adicionar os botões
 const horas = document.getElementById('texto-exibido'); // Substitua 'suaDiv' pelo ID real da sua div

@@ -177,8 +177,13 @@ section .services-1 > p{
     margin-top: 1px;
     font-size: 2vw;
     font-weight: bold;
-
 }
+
+section a{
+    text-decoration: none;
+    color: black;
+}
+
 section .services-2 > img{
     width: 10vw;
     height: 10vw;
